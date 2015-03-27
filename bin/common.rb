@@ -5,7 +5,7 @@ require 'pathname'
 module Common
   REAL_FILEPATH = "#{Pathname.new(__FILE__).realpath}"
   HOME = ENV['HOME']
-  COMMON_FILES = %w(.vimrc .bashrc .profile .bash_profile .gitconfig bin)
+  COMMON_FILES = %w(.bash_profile .bashrc .gitconfig .profile .tmux.conf .vimrc bin)
 
   class << self
     # real absolute path for given common file.
@@ -39,16 +39,19 @@ module Common
     end
     public :remove!
 
-    # Setup symlink files. Overrides existent files or directories.
-    def setup!
-      common_files do |new, common_path|
-        new.make_symlink(common_path) unless new.symlink?
+    # Setup symlink files. Displays error message if file exists.
+    def setup
+      common_files do |new, common_path| 
+        begin
+          new.make_symlink(common_path) 
+        rescue Errno::EEXIST
+          puts $!.message
+        end
       end
     end
-    public :setup!
+    public :setup
   end
 end
-
 
 if __FILE__ == $0
   module Message
@@ -61,13 +64,13 @@ if __FILE__ == $0
       # abort ==> abort execution with status false
       # abort ==> send message to stderr
       def help
-        puts "Usage: #{$0} {setup!|remove!}"
+        puts "Usage: #{$0} {setup|remove!}"
         exit 0
       end
       public :help
     end
   end
-  Message.help unless %w(setup! remove!).include?(ARGV[0])
+  Message.help unless %w(setup remove!).include?(ARGV[0])
   Common.send(ARGV[0])
 end
 
