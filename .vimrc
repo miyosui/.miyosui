@@ -4,10 +4,13 @@ filetype off                   " required!
 " Use Vim-plug
 call plug#begin('~/.vim/plugged')
 
+" colorschemes
+Plug 'flazz/vim-colorschemes'
 Plug 'miyosui/solargrass256.vim'
 Plug 'junegunn/seoul256.vim'
 Plug 'scrooloose/nerdtree'
 
+call plug#end()
 
 "=====================
 " Main configurations
