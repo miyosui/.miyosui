@@ -2,13 +2,19 @@ set nocompatible               " be iMproved
 filetype off                   " required!
 
 " Use Vim-plug
+call plug#begin('~/.vim/plugged')
+
+Plug 'miyosui/solargrass256.vim'
+Plug 'junegunn/seoul256.vim'
+Plug 'scrooloose/nerdtree'
+
 
 "=====================
 " Main configurations
 "=====================
 set title " show filename in titlebar of window
 set t_Co=256 " set vim to work with 256 colors
-colorscheme dsf256 " Load Color Scheme
+colorscheme solargrass256 " Load Color Scheme
 set number " show line numbers
 set enc=utf-8 " set utf-8 encoding as default
 set fileencoding=utf-8
