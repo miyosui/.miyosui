@@ -19,7 +19,6 @@ set fileencodings=utf8,ucs-bom,prc
 "============================
 
 au BufRead,BufNewFile *.md set filetype=markdown "use *.md as markdown files
-au BufRead,BufNewFile *.todo set filetype=markdown "use *.todo as markdown files
 
 "========================================================
 " .vim_backup directory
