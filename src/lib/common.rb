@@ -13,7 +13,7 @@ module Common
   class << self
     # real absolute path for given common file.
     def common_path(common_file)
-      Pathname.new("../../../../#{common_file}").expand_path(REAL_FILEPATH)
+      Pathname.new("../../../#{common_file}").expand_path(REAL_FILEPATH)
     end
     private :common_path
 
@@ -30,11 +30,6 @@ module Common
     end
     private :common_files
 
-    def lib
-      "#{Pathname.new("../../lib").expand_path(REAL_FILEPATH)}"
-    end
-    public :lib
-
     # Name of symlink to be created/removed
     def new(common_file)
       Pathname.new("#{HOME}/#{common_file}")
@@ -44,9 +39,14 @@ module Common
     # Remove new files even if they are not symlinks.
     def remove!
       common_files do |new| 
-        print "Removing file #{new}..." if $VERBOSE
-        new.delete 
-        puts "done." if $VERBOSE
+        begin
+          print "Removing file #{new}..." if $VERBOSE
+          new.delete 
+          puts "done." if $VERBOSE
+        rescue Errno::ENOENT
+          print "\n\t" if $VERBOSE
+          puts "#{$!.message}"
+        end
       end
     end
     public :remove!
@@ -59,7 +59,8 @@ module Common
           new.make_symlink(common_path) 
           puts "done." if $VERBOSE
         rescue Errno::EEXIST
-          puts "\n\t#{$!.message}" if $VERBOSE
+          print "\n\t" if $VERBOSE
+          puts "#{$!.message}"
         end
       end
     end

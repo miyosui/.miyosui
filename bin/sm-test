@@ -4,7 +4,7 @@ at_exit do
   puts 'hello'
 end
 
-require_relative 'common'
+require_relative 'sm-common'
 puts $?.inspect
 puts $?.exitstatus
 exit
