@@ -1,7 +1,12 @@
 #!/usr/bin/env ruby
 
 require 'pathname'
-
+# TODO
+# Move module to lib folder
+# Test methods
+#
+# Will not do it now.
+# How will realpath behave?
 module Common
   REAL_FILEPATH = "#{Pathname.new(__FILE__).realpath}"
   HOME = ENV['HOME']
@@ -10,7 +15,7 @@ module Common
   class << self
     # real absolute path for given common file.
     def common_path(common_file)
-      Pathname.new("../../#{common_file}").expand_path(REAL_FILEPATH)
+      Pathname.new("../../../#{common_file}").expand_path(REAL_FILEPATH)
     end
     private :common_path
 
@@ -27,6 +32,11 @@ module Common
     end
     private :common_files
 
+    def lib
+      "#{Pathname.new("../../lib").expand_path(REAL_FILEPATH)}"
+    end
+    public :lib
+
     # Name of symlink to be created/removed
     def new(common_file)
       Pathname.new("#{HOME}/#{common_file}")
@@ -35,7 +45,11 @@ module Common
 
     # Remove new files even if they are not symlinks.
     def remove!
-      common_files { |new| new.delete }
+      common_files do |new| 
+        print "Removing file #{new}..." if $VERBOSE
+        new.delete 
+        puts "done." if $VERBOSE
+      end
     end
     public :remove!
 
@@ -43,9 +57,11 @@ module Common
     def setup
       common_files do |new, common_path| 
         begin
+          print "Creating symlink from #{new} to #{common_path}..." if $VERBOSE
           new.make_symlink(common_path) 
+          puts "done." if $VERBOSE
         rescue Errno::EEXIST
-          puts $!.message
+          puts "\n\t#{$!.message}" if $VERBOSE
         end
       end
     end
@@ -53,24 +69,20 @@ module Common
   end
 end
 
+# Run only if invoked as a command
 if __FILE__ == $0
-  module Message
-    class << self
-      # NOTE
-      # exit == exit 0 == exit(true) ==> exit successfuly execution with status true
-      # exit 1 == exit(false) ==> abort execution with status false
-      # exit! ==> abort execution with status false
-      # exit! ==> skip at_exit block
-      # abort ==> abort execution with status false
-      # abort ==> send message to stderr
-      def help
-        puts "Usage: #{$0} {setup|remove!}"
-        exit 0
-      end
-      public :help
-    end
+  # NOTE
+  # LOAD_PATH global variable
+  # $LOAD_PATH == $:
+  $:.unshift(Common.lib)
+
+  require 'message'
+
+  $VERBOSE = ARGV.delete('-v') == '-v'
+
+  if !%w(setup remove!).include?(ARGV[0])
+    Message.help { puts "Usage: #{$0} [-v] {setup|remove!}" }
   end
-  Message.help unless %w(setup remove!).include?(ARGV[0])
   Common.send(ARGV[0])
 end
 
