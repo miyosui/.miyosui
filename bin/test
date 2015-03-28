@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+
+at_exit do
+  puts 'hello'
+end
+
+require_relative 'common'
+puts $?.inspect
+puts $?.exitstatus
+exit
+
+ret = system("/Users/miyosui/src/.miyosui/bin/common")

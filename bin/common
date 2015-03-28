@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+
+# NOTE
+# Run only if invoked as a command
+# Not necessary
+# Only *.rb files are allowed to be required
+# 
+# If it was a *.rb file:
+#
+# exit unless __FILE__ == $0 # It will exit the process. 
+#                            # Caller script can only run code within an ``(at_exit) block
+# raise LoadError unless __FILE__ == $0 # Will raise an exception. 
+#                                       # Caller script can handle it with rescue.
+
+require 'pathname'
+      
+REAL_FILEPATH = "#{Pathname.new(__FILE__).realpath}"
+
+# NOTE
+# LOAD_PATH global variable
+# $LOAD_PATH == $:
+$:.unshift("#{Pathname.new("../../src/lib").expand_path(REAL_FILEPATH)}")
+
+require 'common'
+require 'message'
+
+$VERBOSE = ARGV.delete('-v') == '-v'
+
+if !%w(setup remove!).include?(ARGV[0])
+  Message.help { puts "Usage: #{$0} [-v] {setup|remove!}" }
+end
+Common.send(ARGV[0])
+
