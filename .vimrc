@@ -1,5 +1,4 @@
-set nocompatible               " be iMproved
-filetype off                   " required!
+set nocompatible " We're running Vim, not Vi!
 
 " Use Vim-plug
 call plug#begin('~/.vim/plugged')
@@ -9,8 +8,14 @@ Plug 'flazz/vim-colorschemes'
 Plug 'miyosui/solargrass256.vim'
 Plug 'junegunn/seoul256.vim'
 Plug 'scrooloose/nerdtree'
+Plug 'vim-ruby/vim-ruby'
+Plug 'rstacruz/sparkup' " A parser for a condensed HTML format
 
+" Reload .vimrc and :PlugInstall to install plugins 
 call plug#end()
+
+" Add .maat/.vim to runtimepath
+let &rtp .= ',' . $HOME . '/.maat/.vim' . ',' . $HOME . '/.maat/.vim/after'
 
 "=====================
 " Main configurations
@@ -28,6 +33,7 @@ set fileencodings=utf8,ucs-bom,prc
 "============================
 
 au BufRead,BufNewFile *.md set filetype=markdown "use *.md as markdown files
+au BufRead,BufNewFile *.rb set filetype=ruby "use *.rb as ruby files
 
 "========================================================
 " .vim_backup directory
@@ -82,11 +88,11 @@ set showmode
 " Settings for vim-latex
 "==========================
 " REQUIRED. This makes vim invoke Latex-Suite when you open a tex file.
-filetype plugin on
+"filetype plugin on
 
 " IMPORTANT: win32 users will need to have 'shellslash' set so that latex
 " can be called correctly.
-set shellslash
+"set shellslash " we are not using win32
 
 " IMPORTANT: grep will sometimes skip displaying the file name if you
 " search in a singe file. This will confuse Latex-Suite. Set your grep
@@ -94,7 +100,16 @@ set shellslash
 set grepprg=grep\ -nH\ $*
 
 " OPTIONAL: This enables automatic indentation as you type.
-filetype indent on
+"filetype indent on
+
+"=============================
+" Settings for vim-ruby
+"=============================
+"set nocompatible     " We're running Vim, not Vi! " Already set at line 1
+syntax on             " Enable syntax highlighting
+filetype on           " Enable filetype detection
+filetype indent on    " Enable filetype-specific indenting
+filetype plugin on    " Enable filetype-specific plugins
 
 " OPTIONAL: Starting with Vim 7, the filetype of empty .tex files defaults to
 " 'plaintex' instead of 'tex', which results in vim-latex not being loaded.
