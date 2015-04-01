@@ -8,7 +8,7 @@ require 'pathname'
 module Common
   REAL_FILEPATH = "#{Pathname.new(__FILE__).realpath}"
   HOME = ENV['HOME']
-  COMMON_FILES = %w(.bash_profile .bashrc .gitconfig .profile .tmux.conf .vim .vimrc bin)
+  COMMON_FILES = %w(.bash_profile .bashrc .gitconfig .maat .profile .tmux.conf .vim .vimrc bin)
 
   class << self
     # real absolute path for given common file.
